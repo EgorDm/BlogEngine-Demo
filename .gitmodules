@@ -1,0 +1,3 @@
+[submodule "BlogEngine"]
+	path = BlogEngine
+	url = git://github.com/EgorDm/BlogEngine.git
