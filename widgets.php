@@ -13,7 +13,18 @@
             <dd>safepassword</dd>
         </dl>
     </div>
-    <?php } ?>
+    <?php } else { ?>
+        <div class="post">
+            <div class="widget-title">
+                <span class="glyphicon glyphicon-file"></span>
+                <h2>Create new post</h2>
+            </div>
+            <p>You can create your own post to share your thoughts about the BlogEngine or just something for everyone to see.</p>
+            <p>
+                <a class="btn btn-primary btn-l" href="action.php?action=newpost" role="button">Create new post</a>
+            </p>
+        </div>
+    <?php }?>
     <div class="post">
         <div class="widget-title">
             <span class="glyphicon glyphicon-download"></span>

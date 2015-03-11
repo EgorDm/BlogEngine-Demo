@@ -10,6 +10,10 @@
         <div class="alert alert-success" role="alert">Post deleted succesfully.</div>
     <?php } else if($_GET['action']== 4) { ?>
         <div class="alert alert-danger" role="alert">Deleting or Editing another users post is disabled in the demo version. For obvious reasons of course.</div>
+    <?php } else if($_GET['action']== 5) { ?>
+        <div class="alert alert-danger" role="alert">You must be logged in to do that.</div>
+    <?php } else if($_GET['action']== 6) { ?>
+        <div class="alert alert-danger" role="alert">Post was not found.</div>
     <?php }} ?>
     <div class="jumbotron">
         <h1>This website demonstrates the features and the use of the BlogEngine.</h1>

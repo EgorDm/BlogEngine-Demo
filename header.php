@@ -16,6 +16,11 @@ $isloggedin = $bea->user->is_logged_in()
     <link rel="stylesheet" type="text/css" href="css/main.css">
 
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+
+    <?php if($_GET['action'] == 'editpost') { ?>
+        <script src="//cdn.ckeditor.com/4.4.7/basic/ckeditor.js"></script>
+    <?php } ?>
+
 </head>
 <body>
 <nav class="navbar navbar-default navbar-fixed-top">

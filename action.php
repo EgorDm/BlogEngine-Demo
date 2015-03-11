@@ -37,6 +37,21 @@ if(isset($_GET['action'])) {
         } else {
             header("Location: index.php?action=4");
         }
+    } else if($_GET['action'] == 'editpost') {
+        if(isset($_GET['post']) && $isloggedin) {
+            $post_data = $bea->get_post($_GET['post']);
+            if (BEDatabase::get_instance()->rowCount() > 0) {
+                if($_SESSION['user_id'] == $post_data['post_owner']) {
+
+                } else {
+                    header("Location: index.php?action=4");
+                }
+            } else {
+                header("Location: index.php?action=5");
+            }
+        } else {
+            header("Location: index.php?action=4");
+        }
     }
 }
 
@@ -110,6 +125,31 @@ if(!empty($_POST['login'])) {
         $loginmessage = '<p class="error">Please fill in everything correctly.</p>';
     }
 }
+if(!empty($_POST['editpost'])) {
+    $can_edit = $bea->user->has_permission($_SESSION['user_id'], 'perm_editpost');
+    if($isloggedin && $can_edit) {
+        if(isset($_GET['post'])) {
+            if($_SESSION['user_id'] == $post_data['post_owner']) {
+                $bea->edit_post($_GET['post'], $_POST['ptitle'], $_POST['pdesc'], $_POST['pcont'], $_SESSION['user_id']);
+                header("Location: action.php?action=viewpost&post=" . $_GET['post']);
+            } else {
+                header("Location: index.php?action=4");
+            }
+        }
+    } else {
+        header("Location: index.php?action=5");
+    }
+}
+
+if(!empty($_POST['newpost'])) {
+    $can_create = $bea->user->has_permission($_SESSION['user_id'], 'perm_createpost');
+    if($isloggedin && $can_create) {
+        $bea->add_post($_POST['ptitle'], $_POST['pdesc'], $_POST['pcont'], $_SESSION['user_id']);
+        header("Location: action.php?action=viewpost&post=" . BEDatabase::get_instance()->lastInsertId());
+    } else {
+        header("Location: index.php?action=5");
+    }
+}
 
 ?>
 <div class="container">
@@ -131,7 +171,7 @@ if(!empty($_POST['login'])) {
                             <label>Username</label>
                         </div>
                         <div class="col-md-10">
-                            <input type="username" name="username" class="form-control" value="<?php if($loginsuccess == -1) { echo $_POST['username'];}?>">
+                            <input type="text" name="username" class="form-control" value="<?php if($loginsuccess == -1) { echo $_POST['username'];}?>">
                         </div>
                     </div>
                     <div class="row">
@@ -163,7 +203,7 @@ if(!empty($_POST['login'])) {
                             <label>Name</label>
                         </div>
                         <div class="col-md-10">
-                            <input type="fullname" name="fullname" class="form-control" value="<?php if($registersuccess == -1) { echo $_POST['fullname'];} ?>">
+                            <input type="text" name="fullname" class="form-control" value="<?php if($registersuccess == -1) { echo $_POST['fullname'];} ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -171,7 +211,7 @@ if(!empty($_POST['login'])) {
                             <label>Username</label>
                         </div>
                         <div class="col-md-10">
-                            <input type="username" name="username" class="form-control" value="<?php if($registersuccess == -1) { echo $_POST['username'];} ?>">
+                            <input type="text" name="username" class="form-control" value="<?php if($registersuccess == -1) { echo $_POST['username'];} ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -224,7 +264,84 @@ if(!empty($_POST['login'])) {
             </div>
             <?php include 'widgets.php' ?>
         </div>
-
+    <?php } else if($_GET['action'] == 'editpost') {?>
+        <div class="row">
+            <div class="col-md-12">
+                <form method="post">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Title</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input type="text" name="ptitle" class="form-control" value="<?php echo $post_data['post_title']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Desc</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input type="text" name="pdesc" class="form-control" value="<?php echo $post_data['post_desc']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Content</label>
+                        </div>
+                        <div class="col-md-12">
+                            <textarea type="text" name="pcont" class="form-control"><?php echo $post_data['post_cont']; ?></textarea>
+                            <script>
+                                CKEDITOR.replace('pcont');
+                            </script>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-2">
+                            <input type="submit" name="editpost" value="Submit" class="btn btn-default">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <?php } else if($_GET['action'] == 'newpost') {?>
+        <div class="row">
+            <div class="col-md-12">
+                <form method="post">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Title</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input type="text" name="ptitle" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Desc</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input type="text" name="pdesc" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Content</label>
+                        </div>
+                        <div class="col-md-12">
+                            <textarea type="text" name="pcont" class="form-control"></textarea>
+                            <script>
+                                CKEDITOR.replace('pcont');
+                            </script>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-2">
+                            <input type="submit" name="newpost" value="Submit" class="btn btn-default">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     <?php }} ?>
 
 </div>
