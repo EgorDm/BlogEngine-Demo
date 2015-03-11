@@ -1,5 +1,7 @@
 <?php
 include_once 'BlogEngine/pageinit.php';
+
+$isloggedin = $bea->user->is_logged_in()
 ?>
 
 <html lang="en">
@@ -25,13 +27,18 @@ include_once 'BlogEngine/pageinit.php';
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">BlogEngine</a>
+            <a class="navbar-brand" href="index.php">BlogEngine</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Home</a></li>
-                <li <?php if(isset($_GET['login'])) { echo 'class="active"'; } ?>> <a href="action.php?login">Login</a></li>
-                <li <?php if(isset($_GET['register'])) { echo 'class="active"'; } ?>> <a href="action.php?register">Register</a></li>
+                <li><a href="index.php">Home</a></li>
+                <?php if(!$isloggedin) { ?>
+                    <li <?php if(isset($_GET['login'])) { echo 'class="active"'; } ?>> <a href="action.php?action=login">Login</a></li>
+                    <li <?php if(isset($_GET['register'])) { echo 'class="active"'; } ?>> <a href="action.php?action=register">Register</a></li>
+                <?php } else { ?>
+                    <li> <a href="action.php?action=logout">Logout</a></li>
+                    <li> <a style="cursor: default;">Welcome <?php echo $_SESSION['username']; ?></a></li>
+                <?php } ?>
             </ul>
         </div>
     </div>

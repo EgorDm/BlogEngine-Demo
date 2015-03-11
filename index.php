@@ -1,6 +1,16 @@
 <?php include_once 'header.php'?>
 
 <div class="container">
+    <div style="margin-top: 50px"></div>
+    <?php if(isset($_GET['action'])) { if($_GET['action']== 1) { ?>
+        <div class="alert alert-success" role="alert">Logged in succesfully!</div>
+    <?php } else if($_GET['action']== 2) { ?>
+        <div class="alert alert-success" role="alert">Logged out succesfully!</div>
+    <?php } else if($_GET['action']== 3) { ?>
+        <div class="alert alert-success" role="alert">Post deleted succesfully.</div>
+    <?php } else if($_GET['action']== 4) { ?>
+        <div class="alert alert-danger" role="alert">Deleting or Editing another users post is disabled in the demo version. For obvious reasons of course.</div>
+    <?php }} ?>
     <div class="jumbotron">
         <h1>This website demonstrates the features and the use of the BlogEngine.</h1>
         <p>
@@ -11,43 +21,37 @@
     <div class="content">
         <div class="row">
             <div class="col-md-8">
+                <?php
+                $post_list = $bea->get_post_row(5);
+                if($isloggedin) {
+                    $can_delete = $bea->user->has_permission($_SESSION['user_id'], 'perm_deletepost');
+                    $can_edit = $bea->user->has_permission($_SESSION['user_id'], 'perm_editpost');
+                }
+                foreach ($post_list as $row) {
+                ?>
                 <div class="post">
-                    <h2 class="headline">Post Title</h2>
-                    <p class="headline-meta">by Egor Dmitriev on 9 March 2015</p>
+                    <?php if($isloggedin && ($can_delete || $can_edit)) { ?>
+                    <div class="btn-group post-action">
+                        <button type="button" class="btn btn-success dropdown-toggle " data-toggle="dropdown" aria-expanded="false">
+                            Action <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <?php if($can_edit) { ?><li><a href="action.php?action=editpost&post=<?php echo $row['post_id']; ?>">Edit</a></li><?php } ?>
+                            <?php if($can_edit) { ?><li><a href="action.php?action=deletepost&post=<?php echo $row['post_id']; ?>">Delete</a></li><?php } ?>
+                        </ul>
+                    </div>
+                    <?php } ?>
+                    <h2 class="headline"><a href="action.php?action=viewpost&post=<?php echo $row['post_id']; ?>"><?php echo $row['post_title']; ?></a></h2>
+                    <p class="headline-meta">by <?php echo $bea->user->get_username($row['post_owner']) . ' on ' . date_format(date_create($row['post_date']), 'd F Y'); ?></p>
                     <div class="post-content">
                         <p>
-                        The meaning of life is a philosophical and spiritual question concerning the significance of living or existence in general. It can also be expressed in different forms, such as "What should I do?", "Why are we here?", "What is life all about?", and "What is the purpose of existence?" or even "Does life exist at all?" We may never know. It has been the subject of much philosophical, scientific, and theological speculation throughout history. There have been a large number of proposed answers to these questions from many different cultural and ideological backgrounds.
-                        The meaning of life is in the philosophical and religious conceptions of existence, social ties, consciousness, and happiness, and borders on many other issues, such as symbolic meaning, ontology, value, purpose, ethics, good and evil, free will, the existence of one or multiple gods, conceptions of God, the soul, and the afterlife. Scientific contributions focus primarily on describing related empirical facts about the universe, exploring the context and parameters concerning the 'how' of life. Science also studies and can provide recommendations for the pursuit of well-being and a related conception of morality. An alternative, humanistic approach poses the question "What is the meaning of my life?" The value of the question pertaining to the purpose of life may coincide with the achievement of ultimate reality, or a feeling of oneness, or even a feeling of fearness.
+                            <?php echo $row['post_cont']; ?>
                         </p>
                     </div>
                 </div>
+                <?php } ?>
             </div>
-            <div class="col-md-4">
-                <div class="post">
-                    <div class="widget-title">
-                        <span class="glyphicon glyphicon-user"></span>
-                        <h2>Admin panel</h2>
-                    </div>
-                    <p>You can use the admin features by logging in with these credentials or registering your own account. You can your own post! Note: Not all features are functional in the demo version.</p>
-                    <dl class="dl-horizontal">
-                        <dt>Username:</dt>
-                        <dd>beadmin</dd>
-                        <dt>Password:</dt>
-                        <dd>safepassword</dd>
-                    </dl>
-                </div>
-                <div class="post">
-                    <div class="widget-title">
-                        <span class="glyphicon glyphicon-download"></span>
-                        <h2>Download Demo</h2>
-                    </div>
-                    <p>You can download this demo website to use it for your own website or check how it works.</p>
-                    <p>
-                        <a class="btn btn-primary btn-l" href="https://github.com/EgorDm/BlogEngine" role="button">Clone the Github repo</a>
-                        <a class="btn btn-primary btn-link" href="https://github.com/EgorDm/BlogEngine/archive/master.zip" role="button">Download .zip</a>
-                    </p>
-                </div>
-            </div>
+            <?php include 'widgets.php' ?>
         </div>
     </div>
 </div>
