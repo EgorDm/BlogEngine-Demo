@@ -83,10 +83,10 @@ if(!empty($_POST['register'])) {
             if($registerresult == -1) {
                 $registermessage = '<p class="error">Account with specified email adress already exists.</p>';
                 $registersuccess = -1;
-            } else if($registerresult == -3) {
+            } else if($registerresult == -2) {
                 $registermessage = '<p class="error">Account with specified username already exists.</p>';
                 $registersuccess = -1;
-            } else if($registerresult == -2) {
+            } else if($registerresult == -3) {
                 $registermessage = '<p class="error">Server error please contact the admin for help.</p>';
                 $registersuccess = -1;
             } else {
@@ -113,7 +113,7 @@ if(!empty($_POST['login'])) {
             $loginsuccess = -1;
         } else {
             $loginresult = $bea->user->login($username, $password);
-            if($loginresult == -1) {
+            if($loginresult == false) {
                 $loginmessage = '<p class="error">Username or password does not exist.</p>';
                 $loginsuccess = -1;
             } else {

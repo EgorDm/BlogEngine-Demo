@@ -1,7 +1,8 @@
 <?php
-include_once 'BlogEngine/pageinit.php';
+include_once 'BlogEngine/BEInit.php';
 
-$isloggedin = $bea->user->is_logged_in()
+$isloggedin = $bea->user->is_logged_in();
+
 ?>
 
 <html lang="en">
